@@ -10,9 +10,10 @@ function CheckPriceBHX() {
     params: {
       provinceId: 3,
       wardId: 27126,
+      storeId: 6463,
       districtId: 2087,
-      CategoryUrl: "trai-cay-tuoi-ngon",
-      ProductUrl: "dua-luoi-tron-ruot-cam-tui-1-trai-tu-11kg-tro-len",
+      CategoryUrl: "thit-so-che",
+      ProductUrl: "nam-heo-nuong-chao-bach-hoa-xanh-khay-300g",
     },
   };
 
@@ -39,4 +40,4 @@ function CheckPriceBHX() {
       // luôn luôn được thực thi
     });
 }
-module.exports = CheckPriceBHX();
+module.exports = CheckPriceBHX;
