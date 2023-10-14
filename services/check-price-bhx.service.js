@@ -1,4 +1,6 @@
 const { default: axios } = require("axios");
+const botTelegram = require("../bot/bot-telegram");
+const bhxSchema = require("../schemas/bhx.schema");
 
 function CheckPriceBHX() {
   const config = {
@@ -12,8 +14,8 @@ function CheckPriceBHX() {
       wardId: 27126,
       storeId: 6463,
       districtId: 2087,
-      CategoryUrl: "thit-so-che",
-      ProductUrl: "nam-heo-nuong-chao-bach-hoa-xanh-khay-300g",
+      CategoryUrl: "to-chen-dia-dung-mot-lan",
+      ProductUrl: "40-chen-nhua-bach-hoa-xanh-10cm",
     },
   };
 
@@ -23,13 +25,15 @@ function CheckPriceBHX() {
       if (!(boxBuys = response.data.data.boxBuys)) {
         console.log("error");
       }
-      boxBuys.map((item) => {
+      boxBuys.map(async (item) => {
         if (item?.productPrices[0]?.status == 2) return false;
-        const data = {
+        const obj = {
+          idProduct: item?.id,
           name: item?.name,
           price: item?.productPrices[0]?.price,
+          sysPrice: item?.productPrices[0]?.sysPrice,
         };
-        console.log(data);
+        await CheckPrice(obj);
       });
     })
     .catch(function (error) {
@@ -39,5 +43,22 @@ function CheckPriceBHX() {
     .finally(function () {
       // luôn luôn được thực thi
     });
+}
+async function CheckPrice(data) {
+  if (data) {
+    if (data?.price < data?.sysPrice) {
+      botTelegram(
+        `Sản Phẩm Đang Khuyễn Mãi: ${data?.name}, Giá Gốc: ${data?.sysPrice}, Giá Khuyễn Mãi: ${data?.price}`
+      );
+    }
+  }
+  // const obj = await bhxSchema.findOne({
+  //   idProduct: data.idProduct,
+  // });
+  // if (obj) {
+  //   if (obj.sysPrice > data.price) {
+  //     botTelegram(JSON.stringify(obj));
+  //   }
+  // } else await bhxSchema.create(data);
 }
 module.exports = CheckPriceBHX;

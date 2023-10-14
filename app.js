@@ -4,10 +4,10 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var indexRouter = require("./routes/index");
-const task = require("./crons/check-price-bhx.cron");
-const botTelegram = require("./bot-telegram/bot");
-const { Telegraf } = require("telegraf");
+const cronCheckPriceBHX = require("./crons/check-price-bhx.cron");
+const ConnectDB = require("./db/connect");
 var app = express();
+ConnectDB();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -19,8 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-task.start();
-botTelegram;
+cronCheckPriceBHX.start();
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
